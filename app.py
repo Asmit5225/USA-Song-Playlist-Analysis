@@ -223,33 +223,40 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
+    # ── Album Type FIRST ──
+    st.markdown("### 💿 Album Type")
+    sel_album = st.multiselect(
+        "Type",
+        options=['album', 'single', 'compilation'],
+        default=['album', 'single', 'compilation']
+    )
+
+    # ── Date Range SECOND ──
     st.markdown("### 📅 Date Range")
     d_min = df['Date'].min().date()
     d_max = df['Date'].max().date()
-    dr = st.date_input("Date Range", value=(d_min, d_max), min_value=d_min, max_value=d_max, label_visibility="collapsed")
+    dr = st.date_input(
+        "Date Range",
+        value=(d_min, d_max),
+        min_value=d_min,
+        max_value=d_max,
+        label_visibility="collapsed"
+    )
     d_start = pd.Timestamp(dr[0]) if len(dr) >= 1 else pd.Timestamp(d_min)
-    d_end   = pd.Timestamp(dr[1]) if len(dr) == 2 else pd.Timestamp(d_max)
+    d_end = pd.Timestamp(dr[1]) if len(dr) == 2 else pd.Timestamp(d_max)
 
+    # ── Artist Filter (unchanged) ──
     st.markdown("### 🎤 Artist Filter")
     top_artists = art.sort_values('Unique_Songs', ascending=False)['Artist'].head(60).tolist()
-    sel_artists = st.multiselect("Artists (leave blank = all)", options=sorted(top_artists), default=[])
+    sel_artists = st.multiselect(
+        "Artists (leave blank = all)",
+        options=sorted(top_artists),
+        default=[]
+    )
 
-    st.markdown("### 💿 Album Type")
-    sel_album = st.multiselect("Type", options=['album','single','compilation'],
-                               default=['album','single','compilation'])
-
+    # ── Explicit (unchanged) ──
     st.markdown("### 🔞 Explicit")
     explicit_opt = st.selectbox("Content", ["All", "Explicit Only", "Clean Only"])
-
-    st.markdown("---")
-    st.markdown(f"""
-    <div style="font-size:0.73rem;color:#2a5570;text-align:center;line-height:1.8;">
-      <b style="color:#3a8fad">{df['Date'].nunique():,}</b> chart days &nbsp;·&nbsp;
-      <b style="color:#3a8fad">{ss.shape[0]:,}</b> unique songs<br>
-      <b style="color:#3a8fad">{art.shape[0]:,}</b> artists &nbsp;·&nbsp;
-      {df['Date'].min().strftime('%b %Y')} – {df['Date'].max().strftime('%b %Y')}
-    </div>
-    """, unsafe_allow_html=True)
 
 
 # ─── APPLY FILTERS ────────────────────────────────────────────────────────────
